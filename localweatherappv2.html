@@ -1,0 +1,498 @@
+<html>
+    <head>
+        <style>
+                body {
+            padding: 60;
+            font-size: 21;
+            background: linear-gradient(to bottom, orange, Purple);
+            color:white;
+            text-shadow: 1px 1px 4px black;
+            font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+        }
+
+            .smaller {
+                font-size: 19;
+            }
+
+            .smallest {
+                font-size: 12;
+            }
+
+            .bigger {
+                font-size: 25;
+            }
+
+            .alButton {
+                font-weight: bold;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body>
+        <p class="smaller"><i>GavinTheGreat19 <br>Powered By <a href="open-meteo.com">https://open-meteo.com/</a><br>YouTube Showcase Video: <a href="https://www.youtube.com/watch?v=D2TxovnJgmQ">YouTube!</a></i><p>
+        
+            <h1><u>Local Weather App</u></h1>
+        
+        <p><b>Mission, BC</b></p>
+
+        <p class="bigger"><b><u>Current Temperature:</u></b></p>
+
+        <p id="temperatureDisplay"><b>Apparent Temperature : 0.0<br>
+              Actual Temperature : 0.0</b></p>
+
+        <p class="bigger"><b><u>Current Weather Condition:</u></b></p>
+
+        <p id="weatherDisplay"><b>Weather Condition :3</b></p>
+        <img id="weatherIcon" height="128">
+
+        <p class="bigger"><b><u>Time of last Weather Load:</u></b></p>
+
+        <div id="clock"><b>00:00:00</b></div>
+        <div class="smallest"><i>(Please use Pacific Standard Time on your system)</i></div>
+        <br>
+        <div class="bigger"><b><u>PAW's Suggestion:</u></b></div><br>
+
+        <img id="alImage" src="Alnormal.png" height="225">
+        <p id="alTalks" class="alButton" style="white-space: pre;">"Awaiting Activation"</p>
+        <div class="smallest"><i>(Personal Assistant for Weather)</i></div> <br>
+        <input type="button" value ="Activate P.A.W." onclick="{pawActivate()}" style="width: 225; height: 50px; font-size: 25; border-radius: 15px; background-color: white; color: black;">
+
+
+        <script>
+ 
+        // This code should be better than my older code! hopefully
+        // backup URL:
+        // https://api.open-meteo.com/v1/forecast?latitude=49.132927&longitude=-122.326157&current=temperature_2m,apparent_temperature,precipitation,weather_code&timezone=auto
+        // Also, to anyone snooping around my code, these are just the coordinates for the general location of the city. Not anywhere in particular. There are like, 41,000 different people here. so...
+
+
+        // Temperature Display Code:
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=49.132927&longitude=-122.326157&current=temperature_2m,apparent_temperature,precipitation,weather_code&timezone=auto")
+            .then(response => response.json())
+            .then(data => {
+                let temperature = data.current.temperature_2m;
+                let atemperature = data.current.apparent_temperature;
+                document.getElementById("temperatureDisplay").innerHTML = `<b>Apparent Temperature : ${atemperature}°c <br> Actual Temperature : ${temperature}°c`;
+            })
+
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=49.132927&longitude=-122.326157&current=temperature_2m,apparent_temperature,precipitation,weather_code&timezone=auto")
+            .then(response => response.json())
+            .then(data => {
+                
+                let weather = data.current.weather_code;
+                console.log(weather)
+                let temperature = data.current.temperature_2m;
+                let display = document.getElementById("weatherDisplay");
+                let icon = document.getElementById("weatherIcon");
+                
+
+                // Oh boy, this is a duzy... But this has to be done, since the weather code (dont seem to) have any logical reason.
+                // Weather Display Code!
+                if (weather == 0) {
+                    display.innerHTML = `<b>Weather: Clear Skies</b>`
+                    icon.src = "clearsky.png"
+                } else if (weather <= 3 && weather >= 1) {
+                    display.innerHTML = `<b>Weather: Cloudy Skies</b>`
+                    icon.src = "cloudy.png"
+                } else if (weather == 45 || weather == 48) {
+                    display.innerHTML = `<b>Weather: Foggy</b>`
+                    icon.src = "foggy.png"
+                } else if (weather == 51 || weather == 53) {
+                    display.innerHTML = `<b>Weather: Light Drizzle</b>`
+                    icon.src = "rain.png"
+                } else if (weather == 55) {
+                    display.innerHTML = `<b>Weather: Heavy Drizzle</b>`
+                    icon.src = "rain.png"
+                } else if (weather == 56 || weather == 57) {
+                    display.innerHTML = `<b>Weather: Cold Drizzle</b>`
+                    icon.src = "rain.png"
+                } else if (weather == 61 || weather == 63) {
+                    display.innerHTML = `<b>Weather: Raining</b>`
+                    icon.src = "rain.png"
+                } else if (weather == 65) {
+                    display.innerHTML = `<b>Weather: Heavy Rain</b>`
+                    icon.src = "rain.png"
+                } else if (weather == 66 || weather == 67) {
+                    display.innerHTML = `<b>Weather: Freezing Rain<b>`
+                    icon.src = "rain.png"
+                } else if (weather == 71 || weather == 73) {
+                    display.innerHTML = `<b>Weather: Snowing</b>`
+                    icon.src = "snow.png"
+                } else if (weather == 75) {
+                    display.innerHTML = `<b>Weather: Heavy Snow</b>`
+                    icon.src = "snow.png"
+                } else if (weather == 77) {
+                    display.innerHTML = `<b>Weather: Hail*</b>`
+                    icon.src = "hail.png"
+                } else if (weather >= 80 && weather <= 82) {
+                    display.innerHTML = `<b>Weather: Short Rain Burst`
+                    icon.src = "rain.png"
+                } else if (weather == 85 || weather == 86) {
+                    display.innerHTML = `<b>Weather: Short Snow Burst</b>`
+                    icon.src = "snow.png"
+                } else if (weather >= 95) {
+                    display.innerHTML = `<b>Weather: Thunderstorm</b>`
+                    icon.src = "ERROR.png"
+                } else {
+                    display.innerHTML = `<b>Weather: Error 404: No Weather Code`
+                    icon.src = "ERROR.png"
+                }
+            })
+
+        //Time Display Code!
+        //Using system-time. I pray user is on PST, or it doesn't make sense.
+
+
+                //Have to get system time in seconds, because those are sychronized across all time systems. and the open-metro time has proved itself only accurate to the hour
+
+                let now = new Date();
+
+                let hours = now.getHours();
+                let minutes = now.getMinutes();
+                let seconds = now.getSeconds();
+                
+                document.getElementById("clock").innerHTML = `<b>${hours} Hours, ${minutes} Minutes, and ${seconds} Seconds.</b>`
+
+
+                // Now, for the mess that is Al's code
+
+                let alNumber = 0;
+                let alResponse = "Wait before pressing button, no info loaded."
+                let alFace = "Alnormal.png"
+
+                //Dynamic Background code!
+
+                if (hours > 16){
+                document.body.style.background = 'linear-gradient(to bottom, Black, Purple)';
+                } else if (hours > 10) {
+                document.body.style.background = 'linear-gradient(to bottom, Cyan, Purple)';
+                } else if (hours > 5) {
+                document.body.style.background = 'linear-gradient(to bottom, Orange, Purple)';
+                } else if (hours > 0) {
+                document.body.style.background = 'linear-gradient(to bottom, Black, Purple)';
+                }
+                
+
+                //There's gotta be an easier way to do this, but alas... I am just going to like, copy the weather code for Al.
+
+                fetch("https://api.open-meteo.com/v1/forecast?latitude=49.132927&longitude=-122.326157&current=temperature_2m,apparent_temperature,precipitation,weather_code&timezone=auto")
+            .then(response => response.json())
+            .then(data => {
+                
+                let weather = data.current.weather_code;
+                console.log(weather)
+                let temperature = data.current.apparent_temperature;
+                // Oh boy, this is a duzy... But this has to be done, since the weather code (dont seem to) have any logical reason.
+                // Al Speaking code! (let this be a lesson to use ` instead of ". Seriously.)
+                if (weather == 0) {
+                        if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"It's a little cold today. Maybe wear a hoodie!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -10) {
+                            alResponse = `"It's quite cold today. Perhaps you should wear a coat..."`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"It's a nice day. Go out and enjoy the sun!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Really cold outside today! Wear many layers if you are going out."`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"Ah... A warm sunny day. Make sure to drink plenty of water!"`
+                            alFace = "Algogglehappy.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"Woah... It's quite warm today. Make sure to take proper precautions with the heat! stay cool and drink lots of water!"`
+                            alFace = "Algogglehot.png"
+                        }
+                } else if (weather <= 3 && weather >= 1) {
+                        if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"It's a little cold today and it might rain. you should wear a jacket!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's quite cold today. Perhaps you should wear a jacket."`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A nice cloudy day. Bring an umbrella with you if you go outside, just in case!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Really cold outside today! Wear many layers if you are going out."`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"oh wow. A Warm cloudy day... That's odd... You should be fine."`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"Really warm, as well as being cloudy. Take proper precations for the heat!"`
+                            alFace = "Alnormalhot.png"
+                        }
+                } else if (weather == 45 || weather == 48) {
+                    alResponse = `"Ah, a spooky foggy day! Bring something to help with visibilty and be careful on the road!"`
+
+                } else if (weather == 51 || weather == 53) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Theres a drizzle today. It should pass, but wear a jacket so you don't get wet!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"A Cold day with some drizzling rain. Wear a jacket so you don't get wet and cold!"`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A Warm drizzling day! Bring an umbrella with you if you are going outside!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Freezing out there, on a drizzly day like this. If you are going out, wear a few layers!"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A nice warm drizzling day. Maybe have an umbrella or a light jacket!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot drizling day. The water in the air should help you cool down, but take proper precautions!"`
+                            alFace = "Algogglehot.png"
+                        }
+                } else if (weather == 55) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Theres a heavy drizzle today. Wear a jacket so you don't get wet!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"A Cold day with heavy drizzling rain. Wear a jacket so you don't get wet and cold!"`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A Warm drizzling day! Bring an umbrella with you if you are going outside!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Freezing out there, on a drizzly day like this. If you are going out, wear a few layers!"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A nice warm drizzling day. Maybe have an umbrella or a light jacket!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot heavy drizling day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alnormalhot.png"
+                        }
+                } else if (weather == 56 || weather == 57) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Theres a heavy drizzle today. Wear a jacket so you don't get wet!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"A Cold day with heavy drizzling rain. Wear a jacket so you don't get wet and cold!"`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A Warm drizzling day! Bring an umbrella with you if you are going outside!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Freezing out there, on a drizzly day like this. If you are going out, wear a few layers!"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A nice warm drizzling day. Maybe have an umbrella or a light jacket!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot heavy drizling day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alnormalhot.png"
+                        }
+                } else if (weather == 61 || weather == 63) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"A nice cold rainy day, perfect for reading a book! If you're going out, wear a jacket!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty cold rainy day! Wear a warm jacket."`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A nice rainy day, isn't that nice? wear a light jacket if you are going out. Jump in some puddles!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, Freezing rain outside... Maybe stay inside today?"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A fairly warm rainy day out there. take an umbrella with you. maybe a coat too!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot rainy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather == 65) {
+                    if (temperature >= -10 || temperature <= 10) {
+                            alResponse = `"A nice cold heavily rainy day, perfect for reading a book! If you're going out, wear a jacket!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty rainy day! Wear a warm jacket."`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"lots of rain out there, eh? isn't that nice? wear a good jacket if you are going out."`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, Freezing, heavy rain outside... Sound like a perfect invitation to stay inside today?"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 || temperature <= 30) {
+                            alResponse = `"A fairly warm rainy day out there, wear a good rain coat!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot and heavy rainy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather == 66 || weather == 67) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"A nice cold rainy day, perfect for reading a book! If you're going out, wear a jacket!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty cold rainy day! Wear a warm jacket."`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A nice rainy day, isn't that nice? wear a light jacket if you are going out. Jump in some puddles!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, Freezing rain outside... Maybe stay inside today?"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A fairly warm rainy day out there. take an umbrella with you. maybe a coat too!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot rainy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                        //snow
+                } else if (weather == 71 || weather == 73) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Wow! Is it really snowing? Put on a warm jacket and go play in the snow!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty cold, amazingly snowy day! Put on a warm jacket and go play in the snow! "`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A warm snowy day... That's a little strange. take proper precautions"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, freezing snow... Stay inside unless you have to go out."`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"Not physically possible condtions"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot snowy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather == 75) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Wow! Is it really snowing? Put on a warm jacket and go play in the snow!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty cold, amazingly snowy day! Put on a warm jacket and go play in the snow!"`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A warm snowy day... That's a little strange. take proper precautions"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, freezing snow... Stay inside unless you have to go out."`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"Not physically possible condtions"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot snowy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather == 77) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"ugh... hail? cover your head with something."`
+                            alFace = "Alcoldugh.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's cold, and hailing... really? cover your head... and wear a jacket."`
+                            alFace = "Alcoldugh.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"a warm hailing day? geez..."`
+                            alFace = "Alnormalugh.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"a freezing hailing day? Ugh.. just stay inside."`
+                            alFace = "Alcoldugh.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"Not physically possible condtions"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot hailing day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather >= 80 || weather <= 82) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Theres a drizzle today. It should pass, but wear a jacket so you don't get wet!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"A Cold day with some drizzling rain. Wear a jacket so you don't get wet and cold!"`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A Warm drizzling day! Bring an umbrella with you if you are going outside!"`
+                            alFace = "Alnormalhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Freezing out there, on a drizzly day like this. If you are going out, wear a few layers!"`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"A nice warm drizzling day. Maybe have an umbrella or a light jacket!"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot drizling day. The water in the air should help you cool down, but take proper precautions!"`
+                            alFace = "Algogglehot.png"
+                        }
+                } else if (weather == 85 || weather == 86) {
+                    if (temperature >= -10 && temperature <= 10) {
+                            alResponse = `"Wow! Is it really snowing? Put on a warm jacket and go play in the snow!"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -10 && temperature > -20) {
+                            alResponse = `"It's a pretty cold, amazingly snowy day! Put on a warm jacket and go play in the snow! "`
+                            alFace = "Alcoldnormal.png"
+                        } else if (temperature <= 20 && temperature >= 10) {
+                            alResponse = `"A warm snowy day... That's a little strange. take proper precautions"`
+                            alFace = "Alcoldhappy.png"
+                        } else if (temperature < -20) {
+                            alResponse = `"Wow, freezing snow... Stay inside unless you have to go out."`
+                            alFace = "Alcoldupset.png"
+                        } else if (temperature > 20 && temperature <= 30) {
+                            alResponse = `"Not physically possible condtiotns"`
+                            alFace = "Alnormal.png"
+                        } else if (temperature > 30) {
+                            alResponse = `"A hot snowy day. That's gotta be some kinda weather anomoly."`
+                            alFace = "Alcoldhot.png"
+                        }
+                } else if (weather >= 95) {
+                    alResponse = `"Thunder?! Stay inside! Maybe look out the window?"`
+                } else {
+                    alRespone = `"Uh oh, there is no valid code for the current weather... Watch out!"`
+                }
+            })
+
+                // document.getElementById("alTalks").innerHTML = `<b><i>"` + alResponse + `"</i></b>`
+                // document.getElementById("alImage").src = alFace
+
+
+                //Devloped this little bit of code at school. It was made for a Character named Mr. Dude.
+                //We don't talk about Mr. Dude.
+
+                function pawActivate() {
+                let message = alResponse
+                let output = document.getElementById("alTalks")
+                let talkNoise = new Audio('SND_TXT1.wav');
+
+                document.getElementById("alImage").src = alFace
+                i = 0;
+                output.innerText = ``
+                console.log(message)
+
+                typer()
+
+                function typer() {
+                if (message.length > i) {
+                output.innerText += message.charAt(i);
+                i += 1;
+                if (message.charAt(i) !== " ") {
+                talkNoise.currentTime = 0
+                talkNoise.play();
+                }
+                setTimeout(typer, 50);
+                }
+            }
+
+            }
+
+
+            
+
+                // Nearly 500 lines here. I'm really proud of myself. Even just a year ago I would never had considered myself a programmer. Sure, I understood logic, but this!? This is incredible.
+        </script>
+
+    </body>
+</html>

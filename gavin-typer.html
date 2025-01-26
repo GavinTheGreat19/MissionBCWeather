@@ -1,0 +1,65 @@
+<html>
+    <head>
+        <style>
+            body {
+                padding: 60px;
+                background-color: black;
+                text-shadow: 0px 0px 4px lime;
+                color: white;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+            }
+
+            #dudeOutput {
+                white-space: pre;
+            }
+        </style>
+    </head>
+    <body>
+        <input type=button value="Activate Mr. Dude" onclick="startDude()">
+        <h1 id="dudeOutput">Awaiting Input...</h1>
+
+        <script>
+            let outputs = [
+                "My name is Mr. Dude!",
+                "I eat coffee grounds when my mom isn't looking!",
+                "The big earthquake will happen by 2050 in the BC Area...",
+                "Yo! It's ya boy, Mr. Dude!",
+                "I lost my teaching liscence last week.",
+                "My grandma was in a car crash.",
+                "you got any coffee grounds? I'm starving..."
+            ];
+            let output = document.getElementById('dudeOutput');
+            let choice = 0;
+            let i = 0;
+            let message = null;
+            var talkNoise = new Audio('SND_TXT1.wav');
+
+            function startDude() {
+                let choice = Math.floor(Math.random() * outputs.length)
+                let message = outputs[choice]
+                i = 0;
+                output.innerText = ""
+                console.log(choice)
+
+                typer()
+
+                function typer() {
+                if (message.length > i) {
+                output.innerText += message.charAt(i);
+                i += 1;
+                if (message.charAt(i) !== " ") {
+                talkNoise.currentTime = 0
+                talkNoise.play();
+                }
+                setTimeout(typer, 50);
+                }
+            }
+
+            }
+
+           
+        </script>
+    </body>
+</html>
+

@@ -1,0 +1,63 @@
+<html>
+    <head>
+        <style>
+            body {
+                padding: 60;
+                font-size: 21;
+                background: linear-gradient(to bottom, Cyan, Purple);
+                color:white;
+                text-shadow: 1px 1px 10px black;
+                font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif
+            }
+        </style>
+    </head>
+    <body>
+        <h1><u>Welcome to Weather app</u></h1>
+        <h2><i>Mission, BC</i></h2>
+        <br>
+        <p id="timeDisplay">Time of page load:</p>
+        
+        <script>
+            let now = new Date();
+
+            let hours = now.getHours();
+            let minutes = now.getMinutes();
+            let seconds = now.getSeconds();
+
+            let timeFormated
+            timeFormated = `<b>Time of page load: ${hours} hours, ${minutes} minutes, and ${seconds} seconds</b>`
+
+
+            document.getElementById("timeDisplay").innerHTML = timeFormated
+        </script>
+        <br>
+        <p><u><i><b>Current Average Temperature:</b></i></u></p>
+        <h3 id="temperatureDisplay">00.0°c</h3>
+        <script>
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=49.14&longitude=-122.31&current=temperature_2m,precipitation,rain,showers,snowfall&timezone=auto")
+            .then(response => response.json())
+            .then(data => {
+                let temperature = data.current.temperature_2m;
+                document.getElementById("temperatureDisplay").innerText = `${temperature}°c`;
+            })
+                </script>
+        <p><u><i><b>Current weather condition:</i></u></p>
+        <p id="weatherDisplay">It is currently: Weather Condition</p>
+
+        <script>
+            fetch("https://api.open-meteo.com/v1/forecast?latitude=49.14&longitude=-122.31&current=temperature_2m,precipitation,rain,showers,snowfall&timezone=auto")
+            .then(response => response.json())
+            .then(data => {
+                let weathercheck1 = data.current.precipitation;
+                let weather = 'something'
+                if (weathercheck1 == 0) {
+                    weather = 'there is currently no rainfall or snowfall'
+                } else {
+                    weather = 'there is currently rainfall or snowfall'
+                };
+                document.getElementById("weatherDisplay").innerText = `${weather}`;
+            })
+        </script>
+        
+    </body>
+</html>
